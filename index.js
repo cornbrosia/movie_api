@@ -1,5 +1,10 @@
 const express = require('express');
 const app = express();
+const morgan = require('morgan');
+const fs = require('fs'); // import built in node modules fs and path 
+const path = require('path');
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
 
 let topBooks = [
     {
@@ -28,24 +33,13 @@ let topBooks = [
   app.get('/books', (req, res) => {
     res.json(topBooks);
   });
-  
-  
-  // listen for requests
-  app.listen(8080, () => {
-    console.log('Your app is listening on port 8080.');
-  });
+
 
   app.get('/', (req, res) => {
     res.send('Welcome to my book club!');
   });
-  app.use(express.static('public'));
+//   app.use('/documentation',express.static('public'));
 
-  const express = require('express'),
-  morgan = require('morgan'),
-  fs = require('fs'), // import built in node modules fs and path 
-  path = require('path');
-
-const app = express();
 // create a write stream (in append mode)
 // a ‘log.txt’ file is created in root directory
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'})
@@ -65,8 +59,7 @@ app.listen(8080, () => {
   console.log('Your app is listening on port 8080.');
 });
 
-const bodyParser = require('body-parser'),
-  methodOverride = require('method-override');
+
 
 app.use(bodyParser.urlencoded({
   extended: true
