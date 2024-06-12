@@ -26,9 +26,9 @@ let topBooks = [
     res.send('Welcome to my book club!');
   });
   
-  app.get('/documentation', (req, res) => {                  
-    res.sendFile('public/documentation.html', { root: __dirname });
-  });
+//   app.get('/documentation', (req, res) => {                  
+//     res.sendFile('public/documentation.html', { root: __dirname });
+//   });
   
   app.get('/books', (req, res) => {
     res.json(topBooks);
@@ -69,5 +69,5 @@ app.use(bodyParser.json());
 app.use(methodOverride());
 
 app.use((err, req, res, next) => {
-  // logic
+  err.stack("Error")
 });
