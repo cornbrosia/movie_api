@@ -38,7 +38,7 @@ let topBooks = [
   app.get('/', (req, res) => {
     res.send('Welcome to my book club!');
   });
-//   app.use('/documentation',express.static('public'));
+  app.use("/documentation", express.static("public/documentation.html"));
 
 // create a write stream (in append mode)
 // a ‘log.txt’ file is created in root directory
