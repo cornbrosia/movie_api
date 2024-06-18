@@ -96,7 +96,7 @@ if (user){
 //post
 app.post('/users/:id/movieTitle', (req, res)=> 
   {
-    const {id.movieTitle} = req.params;
+    const {id, movieTitle} = req.params;
    
 
 let user = user.find(user => user.id == id)
@@ -111,7 +111,7 @@ if (user){
   //Delete
   app.delete('/users/:id/movieTitle', (req, res)=> 
     {
-      const {id.movieTitle} = req.params;
+      const {id, movieTitle} = req.params;
      
   
   let user = user.find(user => user.id == id)
@@ -124,7 +124,22 @@ if (user){
   }
     }
   );
-
+  
+  app.delete('/users/:id', (req, res)=> 
+    {
+      const {id, movieTitle} = req.params;
+     
+  
+  let user = user.find(user => user.id == id)
+  
+  if (user){
+    users = user.filter (user => user.id != id);
+    res.status(200).send("${userID} has been deleted");
+  }else{
+    res.status(400).send('no such user');
+  }
+    }
+  );
 
 // create a write stream (in append mode)
 // a ‘log.txt’ file is created in root directory
