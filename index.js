@@ -21,14 +21,52 @@ let topBooks = [
     }
   ];
   
+  app.get ('/movies', (req, res) =>{res.status(200).json(movies);})
+//endpoint gets
+  app.get('/movies/genre/genreName', (req, res)=> {
+    const {genreName} = req.params;
+    const genre = movies.find ( movie => movie.Genre.Name === genreName).Genre;
+
+    if (genre){
+      res.status(200).json(genre);
+    }
+    else {
+      res.status(400).send('No such genre')
+    }
+  })
+  app.get('/movies/director/directorName', (req, res)=> {
+    const {directorName} = req.params;
+    const director = movies.find ( movie => movie.Director.Name === directorName).Director;
+
+    if (director){
+      res.status(200).json(director);
+    }
+    else {
+      res.status(400).send('No such genre')
+    }
+  })
+  //endpoint posts
+
+  app.post('/users', (req, res)=> 
+    {const newUser = req.body;
+
+  if (newUser.name){
+    newUser.id = uuid.v4();
+    URLSearchParams.push(newUser);
+    res.status(200).json(newUser);
+
+  } else {
+    res.status(400).send('users need names');
+  }
+    }
+);
+
   // GET requests
   app.get('/', (req, res) => {
     res.send('Welcome to my book club!');
   });
   
-//   app.get('/documentation', (req, res) => {                  
-//     res.sendFile('public/documentation.html', { root: __dirname });
-//   });
+
   
   app.get('/books', (req, res) => {
     res.json(topBooks);
@@ -39,6 +77,54 @@ let topBooks = [
     res.send('Welcome to my book club!');
   });
   app.use("/documentation", express.static("public/documentation.html"));
+//update
+app.put('/users/:id', (req, res)=> 
+  {
+    const {id} = req.params;
+    const updatedUser = req.body;
+
+let user = user.find(user => user.id == id)
+
+if (user){
+  user.name = updatedUser.name;
+  res.status(200).json(user);
+}else{
+  res.status(400).send('no such user');
+}
+  }
+);
+//post
+app.post('/users/:id/movieTitle', (req, res)=> 
+  {
+    const {id.movieTitle} = req.params;
+   
+
+let user = user.find(user => user.id == id)
+
+if (user){
+  user.favoriteMvovies.push(movieTitle);
+  res.status(200).send("${movieTitle} has been added to use ${id}'s array");
+}else{
+  res.status(400).send('no such user');
+}
+  });
+  //Delete
+  app.delete('/users/:id/movieTitle', (req, res)=> 
+    {
+      const {id.movieTitle} = req.params;
+     
+  
+  let user = user.find(user => user.id == id)
+  
+  if (user){
+    user.favoriteMvovies.user.favoriteMovies.filer(title => tile !== movieTitle);
+    res.status(200).send("${movieTitle} has been removed from user ${id}'s array");
+  }else{
+    res.status(400).send('no such user');
+  }
+    }
+  );
+
 
 // create a write stream (in append mode)
 // a ‘log.txt’ file is created in root directory
