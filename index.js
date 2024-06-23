@@ -6,33 +6,44 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 
-let topBooks = [
-    {
-      title: 'Harry Potter and the Sorcerer\'s Stone',
-      author: 'J.K. Rowling'
-    },
-    {
-      title: 'Lord of the Rings',
-      author: 'J.R.R. Tolkien'
-    },
-    {
-      title: 'Twilight',
-      author: 'Stephanie Meyer'
-    }
-  ];
-  
-  app.get ('/movies', (req, res) =>{res.status(200).json(movies);})
+// let topBooks = [
+//     {
+//       title: 'Harry Potter and the Sorcerer\'s Stone',
+//       author: 'J.K. Rowling'
+//     },
+//     {
+//       title: 'Lord of the Rings',
+//       author: 'J.R.R. Tolkien'
+//     },
+//     {
+//       title: 'Twilight',
+//       author: 'Stephanie Meyer'
+//     }
+//   ];
+// let users = [];
+let movies = [];
+  //read
+  app.get ('/movies', (req, res) =>{
+    res.status(200).json("movies");
+  })
 //endpoint gets
-  app.get('/movies/genre/genreName', (req, res)=> {
-    const {genreName} = req.params;
-    const genre = movies.find ( movie => movie.Genre.Name === genreName).Genre;
+  app.get ('/movies/:title', (req, res) =>{
+    const title = req.params.title;
+    res.status(200).json("Details for " + title)
+})  
+  
 
-    if (genre){
-      res.status(200).json(genre);
-    }
-    else {
-      res.status(400).send('No such genre')
-    }
+  app.get('/movies/genre/:genreName', (req, res)=> {
+    const {genreName} = req.params;
+    res.status(200).json("Data about " + genreName)
+    // const genre = movies.find ( movie => movie.Genre.Name === genreName).Genre;
+
+    // if (genre){
+    //   res.status(200).json(genre);
+    // }
+    // else {
+    //   res.status(400).send('No such genre')
+    // }
   })
   app.get('/movies/director/directorName', (req, res)=> {
     const {directorName} = req.params;
@@ -53,7 +64,7 @@ let topBooks = [
   if (newUser.name){
     newUser.id = uuid.v4();
     URLSearchParams.push(newUser);
-    res.status(200).json(newUser);
+    res.status(201).json(newUser);
 
   } else {
     res.status(400).send('users need names');
@@ -61,21 +72,11 @@ let topBooks = [
     }
 );
 
-  // GET requests
-  app.get('/', (req, res) => {
-    res.send('Welcome to my book club!');
-  });
-  
-
-  
-  app.get('/books', (req, res) => {
-    res.json(topBooks);
-  });
+  // app.get('/books', (req, res) => {
+  //   res.json(topBooks);
+  // });
 
 
-  app.get('/', (req, res) => {
-    res.send('Welcome to my book club!');
-  });
   app.use("/documentation", express.static("public/documentation.html"));
 //update
 app.put('/users/:id', (req, res)=> 
@@ -127,7 +128,7 @@ if (user){
   
   app.delete('/users/:id', (req, res)=> 
     {
-      const {id, movieTitle} = req.params;
+      const {id} = req.params;
      
   
   let user = user.find(user => user.id == id)
