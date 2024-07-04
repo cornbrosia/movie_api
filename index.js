@@ -13,6 +13,20 @@ const Users = Models.User;
 mongoose.connect('mongodb://localhost:27017/cfDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 let movies = [];
+
+//read
+app.get('/movies/:title', passport.authenticate('jwt', { session: false }), async (req, res) => {
+
+  const title = req.params.title;
+  const movie = await Movies.findOne({ Title: title });
+
+  if (movie) {
+      res.status(200).json(movie);
+  } else {
+      res.status(404).send('Movie not found');
+  }
+
+});
   //read
   app.get('/movies/directors/:directorName', passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
@@ -85,11 +99,6 @@ app.get('/movies/genre/:genreName',  (req, res) => {
         res.status(500).send('Error: ' + error);
       });
   });
-
- 
-
-
-  app.use("/documentation", express.static("public/documentation.html"));
 //update
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
   //CONDITION TO CHECK ADDED HERE
@@ -116,19 +125,7 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), as
       })
 
 });
-//read
-app.get('/movies/:title', passport.authenticate('jwt', { session: false }), async (req, res) => {
 
-  const title = req.params.title;
-  const movie = await Movies.findOne({ Title: title });
-
-  if (movie) {
-      res.status(200).json(movie);
-  } else {
-      res.status(404).send('Movie not found');
-  }
-
-});
   //Delete
   app.delete('/users/:id/movieTitle', (req, res)=> 
     {
@@ -161,8 +158,7 @@ app.get('/movies/:title', passport.authenticate('jwt', { session: false }), asyn
         });
 });
 
-// create a write stream (in append mode)
-// a ‘log.txt’ file is created in root directory
+
 
 
 // setup the logger
@@ -192,3 +188,5 @@ app.use(methodOverride());
 app.use((err, req, res, next) => {
   err.stack("Error")
 });
+
+app.use("/documentation", express.static("public/documentation.html"));
