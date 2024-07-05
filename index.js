@@ -15,10 +15,10 @@ mongoose.connect('mongodb://localhost:27017/cfDB', { useNewUrlParser: true, useU
 let movies = [];
 
 //read
-app.get('/movies/:title', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.get('/movies/:title', (req, res) => {
 
   const title = req.params.title;
-  const movie = await Movies.findOne({ Title: title });
+  const movie =  Movies.findOne({ Title: title });
 
   if (movie) {
       res.status(200).json(movie);
@@ -28,10 +28,10 @@ app.get('/movies/:title', passport.authenticate('jwt', { session: false }), asyn
 
 });
   //read
-  app.get('/movies/directors/:directorName', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  app.get('/movies/directors/:directorName',  (req, res) => {
     try {
         const directorName = req.params.directorName;
-        const movie = await Movies.findOne({ 'Director.Name': directorName });
+        const movie =  Movies.findOne({ 'Director.Name': directorName });
 
         if (movie) {
             res.status(200).json(movie.Director);
@@ -100,13 +100,13 @@ app.get('/movies/genre/:genreName',  (req, res) => {
       });
   });
 //update
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.put('/users/:Username',  (req, res) => {
   //CONDITION TO CHECK ADDED HERE
   if (req.user.Username !== req.params.Username) {
       return res.status(400).send('Permission denied');
   }
   // CONDITION ENDS
-  await Users.findOneAndUpdate({ Username: req.params.Username }, {
+   Users.findOneAndUpdate({ Username: req.params.Username }, {
       $set:
       {
           Username: req.body.Username,
