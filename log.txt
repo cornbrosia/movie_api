@@ -87,3 +87,6 @@ Timestamp: Fri Jun 07 2024 16:10:23 GMT-0400 (Eastern Daylight Time)
 ::1 - - [24/Jun/2024:17:51:15 +0000] "POST /users/:id HTTP/1.1" 404 149 "-" "PostmanRuntime/7.39.0"
 ::1 - - [24/Jun/2024:17:52:01 +0000] "POST /users/:id HTTP/1.1" 404 149 "-" "PostmanRuntime/7.39.0"
 ::1 - - [24/Jun/2024:17:52:33 +0000] "POST /users/8 HTTP/1.1" 404 147 "-" "PostmanRuntime/7.39.0"
+::1 - - [05/Jul/2024:18:47:52 +0000] "GET /users/bigbob HTTP/1.1" 404 151 "-" "PostmanRuntime/7.39.0"
+::1 - - [05/Jul/2024:18:50:56 +0000] "GET /users/bigphil HTTP/1.1" 404 152 "-" "PostmanRuntime/7.39.0"
+::1 - - [08/Jul/2024:18:13:22 +0000] "GET /users/bigphil HTTP/1.1" 404 152 "-" "PostmanRuntime/7.39.0"

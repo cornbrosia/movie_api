@@ -12,9 +12,21 @@ const Movies = Models.Movie;
 const Users = Models.User;
 mongoose.connect('mongodb://localhost:27017/cfDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
-let movies = [];
+// let movies = [];
 
 //read
+
+app.get('/movies', (req, res) => {
+   Movies.find()
+      .then((movies) => {
+          res.status(201).json(movies);
+      })
+      .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+      });
+});
+
 app.get('/movies/:title', (req, res) => {
 
   const title = req.params.title;
@@ -141,7 +153,7 @@ app.put('/users/:Username',  (req, res) => {
               res.status(500).send('Error: ' + err);
           });
   });
-  
+  //delete
   app.delete('/users/:id',  (req, res) => {
 
      Users.findOneAndDelete({ Username: req.params.Username })
