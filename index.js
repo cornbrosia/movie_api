@@ -26,7 +26,7 @@ app.get('/movies', (req, res) => {
           res.status(500).send('Error: ' + error);
       });
 });
-
+//read
 app.get('/movies/:title', (req, res) => {
 
   const title = req.params.title;
