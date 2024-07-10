@@ -10,7 +10,7 @@ const Models = require('./models.js');
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'});
 const Movies = Models.Movie;
 const Users = Models.User;
-mongoose.connect('mongodb://localhost:27017/cfDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/cfDB');
 
 // let movies = [];
 
@@ -26,7 +26,7 @@ app.get('/movies', (req, res) => {
           res.status(500).send('Error: ' + error);
       });
 });
-//read
+//readno
 app.get('/movies/:title', (req, res) => {
 
   const title = req.params.title;
