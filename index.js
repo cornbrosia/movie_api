@@ -10,9 +10,18 @@ const Models = require('./models.js');
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'});
 const Movies = Models.Movie;
 const Users = Models.User;
-mongoose.connect('mongodb://localhost:27017/cfDB');
+mongoose.connect('mongodb://127.0.0.1:27017/cfDB', { 
+  useNewUrlParser: true, 
+  useUnifiedTopology: true 
+})
+.then(() => {
+  console.log('Connected to MongoDB');
+})
+.catch(err => {
+  console.error('MongoDB connection error:', err);
+});
 
-// let movies = [];
+
 
 //read
 
