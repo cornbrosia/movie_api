@@ -10,6 +10,7 @@ const Models = require('./models.js');
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'});
 const Movies = Models.Movie;
 const Users = Models.User;
+app.use(express.json());
 mongoose.connect('mongodb://127.0.0.1:27017/cfDB', { 
   useNewUrlParser: true, 
   useUnifiedTopology: true 
@@ -36,10 +37,10 @@ app.get('/movies', (req, res) => {
       });
 });
 //readno
-app.get('/movies/:title', (req, res) => {
+app.get('/movies/:title', async (req, res) => {
 
   const title = req.params.title;
-  const movie =  Movies.findOne({ Title: title });
+  const movie = await  Movies.findOne({ Title: title });
 
   if (movie) {
       res.status(200).json(movie);
@@ -49,10 +50,10 @@ app.get('/movies/:title', (req, res) => {
 
 });
   //read
-  app.get('/movies/directors/:directorName',  (req, res) => {
+  app.get('/movies/directors/:directorName', async (req, res) => {
     try {
         const directorName = req.params.directorName;
-        const movie =  Movies.findOne({ 'Director.Name': directorName });
+        const movie = await Movies.findOne({ 'Director.Name': directorName });
 
         if (movie) {
             res.status(200).json(movie.Director);
@@ -66,10 +67,10 @@ app.get('/movies/:title', (req, res) => {
 }); 
   
 //read
-app.get('/movies/genre/:genreName',  (req, res) => {
+app.get('/movies/genre/:genreName', async (req, res) => {
   try {
       const genreName = req.params.genreName;
-      const movie =  Movies.findOne({ 'Genre.Name': genreName });
+      const movie = await Movies.findOne({ 'Genre.Name': genreName });
 
       if (movie) {
           res.status(200).json(movie.Genre);
@@ -121,30 +122,52 @@ app.get('/movies/genre/:genreName',  (req, res) => {
       });
   });
 //update
-app.put('/users/:Username',  (req, res) => {
-  //CONDITION TO CHECK ADDED HERE
-  if (req.user.Username !== req.params.Username) {
+// Middleware to authenticate user
+const authenticate = (req, res, next) => {
+  const token = req.headers['authorization'];
+  if (!token) return res.status(401).send('Access denied.');
+
+  jwt.verify(token, 'your_secret_key', (err, user) => {
+      if (err) return res.status(403).send('Invalid token.');
+      req.user = user; // Set the user data
+      next();
+  });
+};
+app.use(authenticate);
+// Update User Route
+app.put('/users/:Username', authenticate, async (req, res) => {
+  console.log('User in request:', req.user);
+  console.log('Requested Username:', req.params.Username);
+
+  // Check permission
+  if (!req.user || req.user.Username !== req.params.Username) {
       return res.status(400).send('Permission denied');
   }
-  // CONDITION ENDS
-   Users.findOneAndUpdate({ Username: req.params.Username }, {
-      $set:
-      {
-          Username: req.body.Username,
-          Password: req.body.Password,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday
-      }
-  },
-      { new: true }) // This line makes sure that the updated document is returned
-      .then((updatedUser) => {
-          res.json(updatedUser);
-      })
-      .catch((err) => {
-          console.error(err);
-          res.status(500).send('Error: ' + err);
-      })
 
+  try {
+      const updatedUser = await Users.findOneAndUpdate(
+          { Username: req.params.Username },
+          {
+              $set: {
+                  Username: req.body.Username,
+                  Password: req.body.Password,
+                  Email: req.body.Email,
+                  Birthday: req.body.Birthday,
+                  FavoriteMovies: req.body.FavoriteMovies // Include this if necessary
+              }
+          },
+          { new: true }
+      );
+
+      if (!updatedUser) {
+          return res.status(404).send('User not found');
+      }
+
+      res.json(updatedUser);
+  } catch (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err.message);
+  }
 });
 
   //Delete
