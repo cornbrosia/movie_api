@@ -10,6 +10,9 @@ const Models = require('./models.js');
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {flags: 'a'});
 const Movies = Models.Movie;
 const Users = Models.User;
+const jwt = require('jsonwebtoken');
+// const passport = require('passport');
+// require('passport');
 app.use(express.json());
 mongoose.connect('mongodb://127.0.0.1:27017/cfDB', { 
   useNewUrlParser: true, 
@@ -22,7 +25,16 @@ mongoose.connect('mongodb://127.0.0.1:27017/cfDB', {
   console.error('MongoDB connection error:', err);
 });
 
+const authenticate = (req, res, next) => {
+  const token = req.headers['authorization'];
+  if (!token) return res.status(401).send('Access denied.');
 
+  jwt.verify(token, 'abc123', (err, user) => {
+      if (err) return res.status(403).send('Invalid token.');
+      req.user = user; // Set the user data
+      next();
+  });
+};
 
 //read
 
@@ -121,53 +133,33 @@ app.get('/movies/genre/:genreName', async (req, res) => {
         res.status(500).send('Error: ' + error);
       });
   });
-//update
-// Middleware to authenticate user
-const authenticate = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token) return res.status(401).send('Access denied.');
 
-  jwt.verify(token, 'your_secret_key', (err, user) => {
-      if (err) return res.status(403).send('Invalid token.');
-      req.user = user; // Set the user data
-      next();
-  });
-};
-app.use(authenticate);
+
 // Update User Route
-app.put('/users/:Username', authenticate, async (req, res) => {
-  console.log('User in request:', req.user);
-  console.log('Requested Username:', req.params.Username);
-
-  // Check permission
-  if (!req.user || req.user.Username !== req.params.Username) {
+app.put('/users/:Username', authenticate,  async (req, res) => {
+  //CONDITION TO CHECK ADDED HERE
+  if (req.user.Username !== req.params.Username) {
       return res.status(400).send('Permission denied');
   }
-
-  try {
-      const updatedUser = await Users.findOneAndUpdate(
-          { Username: req.params.Username },
-          {
-              $set: {
-                  Username: req.body.Username,
-                  Password: req.body.Password,
-                  Email: req.body.Email,
-                  Birthday: req.body.Birthday,
-                  FavoriteMovies: req.body.FavoriteMovies // Include this if necessary
-              }
-          },
-          { new: true }
-      );
-
-      if (!updatedUser) {
-          return res.status(404).send('User not found');
+  // CONDITION ENDS
+  await Users.findOneAndUpdate({ Username: req.params.Username }, {
+      $set:
+      {
+          Username: req.body.Username,
+          Password: req.body.Password,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday
       }
+  },
+      { new: true }) // This line makes sure that the updated document is returned
+      .then((updatedUser) => {
+          res.json(updatedUser);
+      })
+      .catch((err) => {
+          console.error(err);
+          res.status(500).send('Error: ' + err);
+      })
 
-      res.json(updatedUser);
-  } catch (err) {
-      console.error(err);
-      res.status(500).send('Error: ' + err.message);
-  }
 });
 
   //Delete
@@ -204,7 +196,6 @@ app.put('/users/:Username', authenticate, async (req, res) => {
 
 
 
-
 // setup the logger
 app.use(morgan('combined', {stream: accessLogStream}));
 
@@ -230,7 +221,8 @@ app.use(bodyParser.json());
 app.use(methodOverride());
 
 app.use((err, req, res, next) => {
-  err.stack("Error")
+  console.error(err.stack); // Log the stack trace
+  res.status(500).send('Something went wrong!');
 });
 
 app.use("/documentation", express.static("public/documentation.html"));
