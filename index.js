@@ -178,9 +178,9 @@ app.put('/users/:Username', authenticate,  async (req, res) => {
           });
   });
   //delete
-  app.delete('/users/:id',  (req, res) => {
+  app.delete('/users/:id', async (req, res) => {
 
-     Users.findOneAndDelete({ Username: req.params.Username })
+     await Users.findOneAndDelete({ Username: req.params.Username })
         .then((user) => {
             if (!user) {
                 res.status(404).send(req.params.Username + ' was not found');
