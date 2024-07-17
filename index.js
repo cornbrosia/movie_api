@@ -242,7 +242,8 @@ app.listen(8080, () => {
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-
+const passport = require('passport');
+require('./passport');
 app.use(bodyParser.json());
 app.use(methodOverride());
 
