@@ -169,7 +169,24 @@ app.put('/users/:Username', authenticate, async (req, res) => {
       res.status(500).send('Error: ' + err.message);
   }
 });
-
+//update
+app.post('/users/:Username/FavoriteMovies/:movieTitle', async (req, res) => {
+  await Users.findOneAndUpdate(
+      { Username: req.params.Username },
+      { $push: { FavoriteMovies: req.params.movieTitle } },
+      { new: true }
+  )
+  .then((updatedUser) => {
+      if (!updatedUser) {
+          return res.status(404).send('User not found');
+      }
+      res.status(200).json(updatedUser);
+  })
+  .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+  });
+});
   //Delete
   app.delete('/users/:id/movieTitle', (req, res)=> 
     {
