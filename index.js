@@ -23,7 +23,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/cfDB', {
 });
 app.use(bodyParser.urlencoded({
   extended: true
+
 }));
+let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 app.use(bodyParser.json());

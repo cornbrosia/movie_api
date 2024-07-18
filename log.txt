@@ -120,3 +120,11 @@ Timestamp: Fri Jun 07 2024 16:10:23 GMT-0400 (Eastern Daylight Time)
 ::1 - - [17/Jul/2024:19:15:58 +0000] "PUT /users/bigbob/FavoriteMovies/Superbad HTTP/1.1" 404 175 "-" "PostmanRuntime/7.39.0"
 >>>>>>> Stashed changes
 ::1 - - [18/Jul/2024:00:45:44 +0000] "POST /movies HTTP/1.1" 404 146 "-" "PostmanRuntime/7.39.0"
+::1 - - [18/Jul/2024:16:37:36 +0000] "GET /usjers/bigbobFavoriteMovies/The%20Green%20Mile HTTP/1.1" 404 185 "-" "PostmanRuntime/7.39.0"
+::1 - - [18/Jul/2024:16:38:09 +0000] "GET /usjers/bigbob/FavoriteMovies/The%20Green%20Mile?bigbob=puppy HTTP/1.1" 404 186 "-" "PostmanRuntime/7.39.0"
+::1 - - [18/Jul/2024:16:38:19 +0000] "GET /users/bigbob/FavoriteMovies/The%20Green%20Mile?bigbob=puppy HTTP/1.1" 404 185 "-" "PostmanRuntime/7.39.0"
+::1 - - [18/Jul/2024:16:39:23 +0000] "GET /users/bigbob/FavoriteMovies/The%20Green%20Mile?bigbob=puppy1 HTTP/1.1" 404 185 "-" "PostmanRuntime/7.39.0"
+::1 - - [18/Jul/2024:16:45:41 +0000] "POST /login?bigbob=puppy HTTP/1.1" 404 145 "-" "PostmanRuntime/7.39.0"
+::1 - - [18/Jul/2024:16:46:23 +0000] "POST /login?bigbob=puppy HTTP/1.1" 404 145 "-" "PostmanRuntime/7.39.0"
+::1 - - [18/Jul/2024:16:48:41 +0000] "POST /login?bigbob=puppy1 HTTP/1.1" 404 145 "-" "PostmanRuntime/7.39.0"
+::1 - - [18/Jul/2024:16:48:48 +0000] "POST /login HTTP/1.1" 404 145 "-" "PostmanRuntime/7.39.0"
