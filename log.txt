@@ -119,3 +119,4 @@ Timestamp: Fri Jun 07 2024 16:10:23 GMT-0400 (Eastern Daylight Time)
 ::1 - - [17/Jul/2024:19:14:13 +0000] "PUT /users/bigbob/FavoriteMovies/Superbad HTTP/1.1" 404 175 "-" "PostmanRuntime/7.39.0"
 ::1 - - [17/Jul/2024:19:15:58 +0000] "PUT /users/bigbob/FavoriteMovies/Superbad HTTP/1.1" 404 175 "-" "PostmanRuntime/7.39.0"
 >>>>>>> Stashed changes
+::1 - - [18/Jul/2024:00:45:44 +0000] "POST /movies HTTP/1.1" 404 146 "-" "PostmanRuntime/7.39.0"
