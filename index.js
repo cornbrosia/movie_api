@@ -1,5 +1,8 @@
+const cors = require('cors');
+app.use(cors());
 const express = require('express');
 const app = express();
+const { check, validationResult } = require('express-validator');
 const morgan = require('morgan');
 const fs = require('fs'); // import built in node modules fs and path 
 const path = require('path');
@@ -110,7 +113,19 @@ app.get('/movies/genre/:genreName',passport.authenticate('jwt', { session: false
   })
   //create
 
-  app.post('/users', async (req, res) => {
+      
+      app.post('/users',  [
+        check('Username', 'Username is required').isLength({min: 5}),
+        check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+        check('Password', 'Password is required').not().isEmpty(),
+        check('Email', 'Email does not appear to be valid').isEmail()
+      ],async (req, res) => {
+        let errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+          return res.status(422).json({ errors: errors.array() });
+        }
+    let hashedPassword = Users.hashPassword(req.body.Password);
     await Users.findOne({ Username: req.body.Username })
       .then((user) => {
         if (user) {
@@ -119,7 +134,7 @@ app.get('/movies/genre/:genreName',passport.authenticate('jwt', { session: false
           Users
             .create({
               Username: req.body.Username,
-              Password: req.body.Password,
+              Password: hashedPassword,
               Email: req.body.Email,
               Birthday: req.body.Birthday
             })
@@ -172,10 +187,14 @@ app.put('/users/:Username', passport.authenticate('jwt', { session: false }), as
   }
 });
 //update
-app.post('/users/:Username/FavoriteMovies/:movieID',passport.authenticate('jwt', { session: false }), async (req, res) => {
+
+app.post('/users/:Username/FavoriteMovies/:title',passport.authenticate
+  ('jwt', { session: false }), async (req, res) => {
+    const title = req.params.title;
+
   await Users.findOneAndUpdate(
       { Username: req.params.Username },
-      { $push: { FavoriteMovies: req.params.movieID } },
+      { $push: { FavoriteMovies: title } },
       { new: true }
   )
   .then((updatedUser) => {
@@ -190,10 +209,12 @@ app.post('/users/:Username/FavoriteMovies/:movieID',passport.authenticate('jwt',
   });
 });
   //Deletetitle
-  app.delete('/users/:Username/FavoriteMovies/:MovieID',passport.authenticate('jwt', { session: false }), async (req, res)=> 
+  app.delete('/users/:Username/FavoriteMovies/:title',passport.authenticate('jwt', { session: false }), async (req, res)=> 
     {
+      const title = req.params.title;
+
        await Users.findOneAndUpdate({ Username: req.params.Username }, {
-          $pull: { FavoriteMovies: req.params.MovieID }
+          $pull: { FavoriteMovies: title }
       },
           { new: true }) // This line makes sure that the updated document is returned
           .then((updatedUser) => {
@@ -235,8 +256,9 @@ app.get('/secreturl', (req, res) => {
   res.send('This is a secret url with super top-secret content.');
 });
 
-app.listen(process.env.PORT || 8080, () => {
-  console.log('Your app is listening on port 8080.');
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+ console.log('Listening on Port ' + port);
 });
 
 
