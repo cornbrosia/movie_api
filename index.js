@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
+const app = express();
+
 app.use(cors());
 
-const app = express();
 const { check, validationResult } = require('express-validator');
 const morgan = require('morgan');
 const fs = require('fs'); // import built in node modules fs and path 
