@@ -25,7 +25,9 @@ let movieSchema = mongoose.Schema({
 
     
   });
-
+  userSchema.index({ Username: 1 }, { unique: true });
+  userSchema.index({ Email: 1 }, { unique: true });
+  
   userSchema.statics.hashPassword = (password) => {
     return bcrypt.hashSync(password, 10);
   };
